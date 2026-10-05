@@ -1,0 +1,53 @@
+import flixel.FlxG;
+import funkin.modding.module.Module;
+import funkin.modding.events.ScriptEvent;
+import funkin.modding.events.ScriptEvent.UpdateScriptEvent;
+import funkin.play.PlayState;
+
+class MidSlice extends Module {
+	public function new() {
+		super("MidSlice", 0);
+	}
+
+	override function onUpdate(event:UpdateScriptEvent):Void {
+		super.onUpdate(event);
+		if (Std.isOfType(FlxG.state, PlayState)) applyOpponentVisibility();
+	}
+
+	override function onSongLoaded(event:SongLoadScriptEvent):Void {
+		super.onSongLoaded(event);
+		applyMiddleScroll();
+	}
+
+	override function onSongStart(event:ScriptEvent):Void {
+		super.onSongStart(event);
+		applyMiddleScroll();
+	}
+
+	function applyMiddleScroll():Void {
+		var playState:PlayState = PlayState.instance;
+
+		if (playState != null) {
+			// 1. Oyuncu Oklarını Ortala
+			if (playState.playerStrumline != null) {
+				var playerLine = playState.playerStrumline;
+
+				// Ekranın tam ortasına yerleştir
+				playerLine.x = (FlxG.width - playerLine.width) / 2;
+
+				if (playerLine.background != null) {
+					playerLine.background.visible = false; // İsteğe bağlı: Arka planı kapatır
+				}
+			}
+
+			applyOpponentVisibility();
+		}
+	}
+
+	function applyOpponentVisibility():Void {
+		var playState:PlayState = PlayState.instance;
+		if (playState == null || playState.opponentStrumline == null) return;
+		playState.opponentStrumline.visible = false;
+	}
+
+}

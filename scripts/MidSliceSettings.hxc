@@ -1,0 +1,191 @@
+import flixel.FlxG;
+import flixel.FlxState;
+import flixel.FlxSprite;
+import flixel.group.FlxSpriteGroup;
+import flixel.text.FlxText;
+import funkin.Paths;
+import funkin.Preferences;
+import funkin.modding.module.Module;
+import funkin.modding.events.ScriptEvent.UpdateScriptEvent;
+import funkin.ui.mainmenu.MainMenuState;
+
+class MidSliceSettings extends Module {
+	var menuUi:FlxSpriteGroup;
+	var menuState:FlxState;
+	var panelParts:Array<FlxSprite> = [];
+	var launcherShadow:FlxSprite;
+	var launcherButton:FlxSprite;
+	var launcherAccent:FlxSprite;
+	var launcherLabel:FlxText;
+	var launcherSubLabel:FlxText;
+	var upButton:FlxSprite;
+	var downButton:FlxSprite;
+	var closeButton:FlxSprite;
+	var animationButton:FlxSprite;
+	var animationLabel:FlxText;
+	public var animationsEnabled:Bool = true;
+	public var panelOpen:Bool = false;
+
+	public function new() {
+		super("MidSliceSettings", 0);
+	}
+
+	override function onUpdate(event:UpdateScriptEvent):Void {
+		super.onUpdate(event);
+
+		if (Std.isOfType(FlxG.state, MainMenuState)) {
+			if (menuUi == null) createMenuPanel();
+			updateMenuPanel();
+		} else if (menuUi != null) {
+			menuState.remove(menuUi, true);
+			menuUi.destroy();
+			menuUi = null;
+			menuState = null;
+			panelParts = [];
+			panelOpen = false;
+		}
+
+	}
+
+	function isDownscrollSelected():Bool {
+		return Preferences.downscroll;
+	}
+
+	public function togglePanel():Void {
+		panelOpen = !panelOpen;
+		refreshPanelVisibility();
+	}
+
+	public function toggleAnimations():Void {
+		animationsEnabled = !animationsEnabled;
+	}
+
+	public function setDownscroll(value:Bool):Void {
+		Preferences.downscroll = value;
+	}
+
+	function createMenuPanel():Void {
+		menuState = FlxG.state;
+		menuUi = new FlxSpriteGroup();
+
+		var panelWidth = 310;
+		var panelHeight = 300;
+		var panelX = (FlxG.width - panelWidth) / 2;
+		var panelY = (FlxG.height - panelHeight) / 2;
+
+		addPanelPart(new FlxSprite(panelX + 8, panelY + 8).makeGraphic(panelWidth, panelHeight, 0xFF11101A));
+		addPanelPart(new FlxSprite(panelX, panelY).makeGraphic(panelWidth, panelHeight, 0xFF211A2A));
+		addPanelPart(new FlxSprite(panelX, panelY).makeGraphic(155, 6, 0xFFFF405D));
+		addPanelPart(new FlxSprite(panelX + 155, panelY).makeGraphic(155, 6, 0xFF398CFF));
+		addPanelText(panelX + 20, panelY + 20, 250, "MİDSLICE", 27, 0xFFFFFFFF);
+		addPanelText(panelX + 21, panelY + 53, 250, "KONTROL ALANI  /  0.8.6", 12, 0xFFFF91A2);
+		addPanelPart(new FlxSprite(panelX + 20, panelY + 80).makeGraphic(270, 2, 0xFF514052));
+		addPanelText(panelX + 20, panelY + 96, 250, "AKIŞ ÇİZGİSİ HİZASI", 12, 0xFFBDB8C2);
+
+		addPanelPart(new FlxSprite(panelX + 14, panelY + 120).makeGraphic(130, 58, 0xFF100E19));
+		addPanelPart(new FlxSprite(panelX + 156, panelY + 120).makeGraphic(140, 58, 0xFF100E19));
+		upButton = new FlxSprite(panelX + 18, panelY + 124).makeGraphic(122, 50, 0xFFE84151);
+		downButton = new FlxSprite(panelX + 160, panelY + 124).makeGraphic(132, 50, 0xFF173D73);
+		addPanelPart(upButton);
+		addPanelPart(downButton);
+		addPanelText(panelX + 18, panelY + 139, 122, "YUKARI", 16, 0xFFFFFFFF);
+		addPanelText(panelX + 160, panelY + 139, 132, "AŞAĞI", 16, 0xFFFFFFFF);
+
+		addPanelText(panelX + 20, panelY + 194, 250, "ÖZEL VURUŞ EFEKTLERİ", 12, 0xFFBDB8C2);
+		animationButton = new FlxSprite(panelX + 18, panelY + 216).makeGraphic(274, 46, 0xFFE84151);
+		addPanelPart(animationButton);
+		animationLabel = new FlxText(panelX + 18, panelY + 229, 274, "", 16);
+		animationLabel.setFormat("Press Start 2P", 16, 0xFFFFFFFF, null, null, 0x00000000, false);
+		animationLabel.alignment = "center";
+		addPanelPart(animationLabel);
+		addPanelText(panelX + 20, panelY + 270, 260, "SOL/SAĞ: HİZA     A: FX", 10, 0xFFBDB8C2);
+
+		closeButton = new FlxSprite(panelX + 276, panelY + 15).makeGraphic(22, 22, 0xFF701B2A);
+		addPanelPart(closeButton);
+		addPanelText(panelX + 276, panelY + 16, 22, "X", 13, 0xFFFFFFFF);
+
+		var launcherWidth = 270;
+		var launcherHeight = 66;
+		var launcherX = FlxG.width - launcherWidth - 38;
+		var launcherY = (FlxG.height - launcherHeight) / 2;
+
+		launcherShadow = new FlxSprite(launcherX + 7, launcherY + 7)
+			.makeGraphic(launcherWidth, launcherHeight, 0xB0000000);
+		launcherShadow.scrollFactor.set(0, 0);
+		menuUi.add(launcherShadow);
+
+		launcherButton = new FlxSprite(launcherX, launcherY)
+			.makeGraphic(launcherWidth, launcherHeight, 0xFF211A2A);
+		launcherButton.scrollFactor.set(0, 0);
+		menuUi.add(launcherButton);
+
+		launcherAccent = new FlxSprite(launcherX, launcherY)
+			.makeGraphic(6, launcherHeight, 0xFFFF405D);
+		launcherAccent.scrollFactor.set(0, 0);
+		menuUi.add(launcherAccent);
+
+		launcherLabel = new FlxText(launcherX + 20, launcherY + 13, launcherWidth - 30, "MİDSLICE AYARLARI M TUŞU AÇ", 13);
+		launcherLabel.setFormat("Press Start 2P", 13, 0xFFFFFFFF, null, null, 0x00000000, false);
+		launcherLabel.scrollFactor.set(0, 0);
+		menuUi.add(launcherLabel);
+
+		launcherSubLabel = new FlxText(launcherX + 20, launcherY + 40, launcherWidth - 30, "KAYDIRMA  /  ANİMASYON", 8);
+		launcherSubLabel.setFormat("Press Start 2P", 8, 0xFFFF91A2, null, null, 0x00000000, false);
+		launcherSubLabel.scrollFactor.set(0, 0);
+		menuUi.add(launcherSubLabel);
+
+		menuState.add(menuUi);
+		refreshPanelVisibility();
+	}
+
+	function addPanelPart(sprite:FlxSprite):Void {
+		panelParts.push(sprite);
+		menuUi.add(sprite);
+	}
+
+	function addPanelText(x:Float, y:Float, width:Float, text:String, size:Int, color:Int):Void {
+		var label = new FlxText(x, y, width, text, size);
+		label.setFormat("Press Start 2P", size, color, null, null, 0x00000000, false);
+		addPanelPart(label);
+	}
+
+	function updateMenuPanel():Void {
+		var hoveringLauncher = mouseOver(launcherButton);
+		launcherButton.color = hoveringLauncher ? 0xFF30263D : 0xFF211A2A;
+		launcherAccent.color = hoveringLauncher ? 0xFF398CFF : 0xFFFF405D;
+		launcherSubLabel.color = hoveringLauncher ? 0xFF9BCBFF : 0xFFFF91A2;
+
+		if (FlxG.mouse.justPressed) {
+			if (hoveringLauncher) {
+				togglePanel();
+			} else if (panelOpen && mouseOver(upButton)) {
+				Preferences.downscroll = false;
+			} else if (panelOpen && mouseOver(downButton)) {
+				Preferences.downscroll = true;
+			} else if (panelOpen && mouseOver(animationButton)) {
+				toggleAnimations();
+			} else if (panelOpen && mouseOver(closeButton)) {
+				panelOpen = false;
+				refreshPanelVisibility();
+			}
+		}
+
+		upButton.color = isDownscrollSelected() ? 0xFF701B2A : 0xFFE84151;
+		downButton.color = isDownscrollSelected() ? 0xFF347FE5 : 0xFF173D73;
+		animationButton.color = animationsEnabled ? 0xFFE84151 : 0xFF701B2A;
+		animationLabel.text = animationsEnabled ? "ANİMASYON: AÇIK" : "ANİMASYON: KAPALI";
+	}
+
+	function mouseOver(sprite:FlxSprite):Bool {
+		return FlxG.mouse.x >= sprite.x
+			&& FlxG.mouse.x <= sprite.x + sprite.width
+			&& FlxG.mouse.y >= sprite.y
+			&& FlxG.mouse.y <= sprite.y + sprite.height;
+	}
+
+	function refreshPanelVisibility():Void {
+		for (part in panelParts) {
+			part.visible = panelOpen;
+		}
+	}
+}

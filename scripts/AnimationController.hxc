@@ -1,0 +1,134 @@
+import flixel.FlxG;
+import flixel.math.FlxPoint;
+import flixel.tweens.FlxEase;
+import flixel.tweens.FlxTween;
+import funkin.modding.module.Module;
+import funkin.modding.module.ModuleHandler;
+import funkin.modding.events.ScriptEvent;
+import funkin.modding.events.ScriptEvent.SongTimeScriptEvent;
+import funkin.modding.events.ScriptEvent.UpdateScriptEvent;
+import funkin.play.PlayState;
+import funkin.play.notes.StrumlineNote;
+
+class AnimationController extends Module {
+	var receptorBaseScales:Array<FlxPoint> = [];
+	var animationsEnabled:Bool = true;
+
+	public function new() {
+		super("AnimationController", 0);
+	}
+
+	override function onUpdate(event:UpdateScriptEvent):Void {
+		super.onUpdate(event);
+
+		var enabled = getAnimationSetting();
+		if (enabled != animationsEnabled) {
+			animationsEnabled = enabled;
+			if (animationsEnabled) {
+				suppressStyleAnimations();
+			} else {
+				restoreStyleAnimations();
+			}
+		}
+
+		if (animationsEnabled && Std.isOfType(FlxG.state, PlayState)) {
+			suppressStyleAnimations();
+		}
+	}
+
+	override function onSongLoaded(event:SongLoadScriptEvent):Void {
+		super.onSongLoaded(event);
+		cacheReceptorScales();
+		animationsEnabled = getAnimationSetting();
+		if (animationsEnabled) suppressStyleAnimations();
+	}
+
+	override function onBeatHit(event:SongTimeScriptEvent):Void {
+		super.onBeatHit(event);
+		if (animationsEnabled) pulseReceptors();
+	}
+
+	function getAnimationSetting():Bool {
+		var settings = ModuleHandler.getModule("MidSliceSettings");
+		if (settings == null) return true;
+
+		var midSliceSettings:MidSliceSettings = cast settings;
+		return midSliceSettings.animationsEnabled;
+	}
+
+	function cacheReceptorScales():Void {
+		receptorBaseScales = [];
+		var playState:PlayState = PlayState.instance;
+		if (playState == null || playState.playerStrumline == null) return;
+
+		for (receptor in playState.playerStrumline.strumlineNotes.members) {
+			if (receptor == null) {
+				receptorBaseScales.push(new FlxPoint(1, 1));
+			} else {
+				receptorBaseScales.push(new FlxPoint(receptor.scale.x, receptor.scale.y));
+			}
+		}
+	}
+
+	function suppressStyleAnimations():Void {
+		var playState:PlayState = PlayState.instance;
+		if (playState == null || playState.playerStrumline == null) return;
+
+		for (receptor in playState.playerStrumline.strumlineNotes.members) {
+			if (receptor == null) continue;
+			var currentAnimation = receptor.animation.curAnim;
+			if (currentAnimation == null || currentAnimation.name != "static" || !currentAnimation.paused) {
+				receptor.playStatic();
+				receptor.animation.pause();
+			}
+		}
+	}
+
+	function restoreStyleAnimations():Void {
+		var playState:PlayState = PlayState.instance;
+		if (playState == null || playState.playerStrumline == null) return;
+
+		var receptors = playState.playerStrumline.strumlineNotes.members;
+		for (i in 0...receptors.length) {
+			var receptor = receptors[i];
+			if (receptor == null) continue;
+
+			FlxTween.cancelTweensOf(receptor.scale);
+			if (i < receptorBaseScales.length) {
+				var baseScale = receptorBaseScales[i];
+				receptor.scale.set(baseScale.x, baseScale.y);
+			}
+			receptor.animation.resume();
+			receptor.playStatic();
+		}
+	}
+
+	function pulseReceptors():Void {
+		var playState:PlayState = PlayState.instance;
+		if (playState == null || playState.playerStrumline == null) return;
+
+		var receptors = playState.playerStrumline.strumlineNotes.members;
+		if (receptorBaseScales.length != receptors.length) cacheReceptorScales();
+
+		for (i in 0...receptors.length) {
+			var receptor = receptors[i];
+			if (receptor == null || i >= receptorBaseScales.length) continue;
+
+			pulseReceptor(receptor, receptorBaseScales[i], i * 0.035);
+		}
+	}
+
+	function pulseReceptor(receptor:StrumlineNote, baseScale:FlxPoint, delay:Float):Void {
+		var baseX = baseScale.x;
+		var baseY = baseScale.y;
+		FlxTween.cancelTweensOf(receptor.scale);
+		receptor.scale.set(baseX, baseY);
+		FlxTween.tween(receptor.scale, {x: baseX * 1.16, y: baseY * 1.16}, 0.12, {
+			ease: FlxEase.backOut,
+			startDelay: delay,
+			onComplete: function(tween:FlxTween):Void {
+				FlxTween.tween(receptor.scale, {x: baseX, y: baseY}, 0.18, {ease: FlxEase.quadOut});
+			}
+		});
+	}
+}

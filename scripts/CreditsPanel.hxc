@@ -1,0 +1,92 @@
+import flixel.FlxG;
+import flixel.FlxState;
+import flixel.FlxSprite;
+import flixel.group.FlxSpriteGroup;
+import flixel.text.FlxText;
+import funkin.modding.module.Module;
+import funkin.modding.events.ScriptEvent.UpdateScriptEvent;
+import funkin.ui.mainmenu.MainMenuState;
+
+class CreditsPanel extends Module {
+	var overlay:FlxSpriteGroup;
+	var ownerState:FlxState;
+	var panelOpen:Bool = false;
+
+	public function new() {
+		super("CreditsPanel", 0);
+	}
+
+	override function onUpdate(event:UpdateScriptEvent):Void {
+		super.onUpdate(event);
+
+		if (!Std.isOfType(FlxG.state, MainMenuState)) {
+			removePanel();
+			return;
+		}
+
+		if (FlxG.keys.justPressed.C) {
+			if (overlay == null) createPanel();
+			panelOpen = !panelOpen;
+			overlay.visible = panelOpen;
+		}
+
+		if (panelOpen && FlxG.keys.justPressed.ESCAPE) {
+			panelOpen = false;
+			overlay.visible = false;
+		}
+	}
+
+	function createPanel():Void {
+		ownerState = FlxG.state;
+		overlay = new FlxSpriteGroup();
+		overlay.scrollFactor.set(0, 0);
+
+		var panelX = (FlxG.width - 560) / 2;
+		var panelY = (FlxG.height - 390) / 2;
+
+		var dimmer = new FlxSprite().makeGraphic(FlxG.width, FlxG.height, 0xFF080811);
+		dimmer.alpha = 0.78;
+		addPart(dimmer);
+		addPart(new FlxSprite(panelX + 9, panelY + 10).makeGraphic(560, 390, 0xFF090912));
+		addPart(new FlxSprite(panelX, panelY).makeGraphic(560, 390, 0xFF201827));
+		addPart(new FlxSprite(panelX, panelY).makeGraphic(280, 7, 0xFFFF405D));
+		addPart(new FlxSprite(panelX + 280, panelY).makeGraphic(280, 7, 0xFF398CFF));
+
+		addText(panelX + 34, panelY + 30, 490, "YAPIMCILAR", 38, 0xFFFFFFFF);
+		addText(panelX + 36, panelY + 80, 488, "ORTA NOTALAR FNF V-SLİCE 0.8.6 İÇİN", 14, 0xFFFF91A2);
+		addPart(new FlxSprite(panelX + 36, panelY + 116).makeGraphic(488, 2, 0xFF514052));
+
+		addText(panelX + 38, panelY + 145, 170, "MOD TASARIMI", 12, 0xFFBDB8C2);
+		addText(panelX + 230, panelY + 137, 292, "ALI BERK", 24, 0xFFFFFFFF);
+		addText(panelX + 38, panelY + 199, 170, "PROJE", 12, 0xFFBDB8C2);
+		addText(panelX + 230, panelY + 191, 292, "MiDSLiCE", 24, 0xFFFF526D);
+		addText(panelX + 38, panelY + 253, 170, "OYUN SÜRÜMÜ", 12, 0xFFBDB8C2);
+		addText(panelX + 230, panelY + 245, 292, "FNF V-SLİCE 0.8.6", 20, 0xFF65A8FF);
+
+		addPart(new FlxSprite(panelX + 36, panelY + 296).makeGraphic(488, 2, 0xFF514052));
+		addText(panelX + 36, panelY + 315, 488, "Bağımsız hayran yapımı modifikasyon / Resmi değil", 13, 0xFFBDB8C2);
+		addText(panelX + 36, panelY + 356, 488, "C TUŞU YADA ESC TUŞU İLE KAPAT", 12, 0xFFFFFFFF);
+
+		ownerState.add(overlay);
+		overlay.visible = false;
+	}
+
+	function addPart(sprite:FlxSprite):Void {
+		overlay.add(sprite);
+	}
+
+	function addText(x:Float, y:Float, width:Float, text:String, size:Int, color:Int):Void {
+		var label = new FlxText(x, y, width, text, size);
+		label.setFormat("Press Start 2P", size, color, null, null, 0x00000000, false);
+		overlay.add(label);
+	}
+
+	function removePanel():Void {
+		if (overlay == null) return;
+		ownerState.remove(overlay, true);
+		overlay.destroy();
+		overlay = null;
+		ownerState = null;
+		panelOpen = false;
+	}
+}

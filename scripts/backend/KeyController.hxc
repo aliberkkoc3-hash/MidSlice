@@ -1,0 +1,29 @@
+import flixel.FlxG;
+import funkin.modding.module.Module;
+import funkin.modding.module.ModuleHandler;
+import funkin.modding.events.ScriptEvent.UpdateScriptEvent;
+import funkin.ui.mainmenu.MainMenuState;
+
+class KeyController extends Module {
+	public function new() {
+		super("KeyController", 0);
+	}
+
+	override function onUpdate(event:UpdateScriptEvent):Void {
+		super.onUpdate(event);
+
+		var settingsModule = ModuleHandler.getModule("MidSliceSettings");
+		if (settingsModule == null) return;
+
+		var settings:MidSliceSettings = cast settingsModule;
+
+		if (Std.isOfType(FlxG.state, MainMenuState)) {
+			if (FlxG.keys.justPressed.M) settings.togglePanel();
+			if (settings.panelOpen) {
+				if (FlxG.keys.justPressed.A) settings.toggleAnimations();
+				if (FlxG.keys.justPressed.LEFT) settings.setDownscroll(false);
+				else if (FlxG.keys.justPressed.RIGHT) settings.setDownscroll(true);
+			}
+		}
+	}
+}

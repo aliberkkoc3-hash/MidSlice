@@ -1,0 +1,9 @@
+{
+  "id": "midslice",
+  "title": "MidSlice",
+  "description": "V-Slice için özel olarak geliştirilmiş orijinal bir middlescroll modu.",
+  "author": "Ali Berk",
+  "api_version": "0.8.6",
+  "mod_version": "0.0.1",
+  "license": "MIT"
+}
