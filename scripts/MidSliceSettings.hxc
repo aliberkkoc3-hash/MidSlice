@@ -11,18 +11,34 @@ import funkin.ui.mainmenu.MainMenuState;
 
 class MidSliceSettings extends Module {
 	var menuUi:FlxSpriteGroup;
+	var settingsPanel:FlxSpriteGroup;
 	var menuState:FlxState;
-	var panelParts:Array<FlxSprite> = [];
+
 	var launcherShadow:FlxSprite;
 	var launcherButton:FlxSprite;
 	var launcherAccent:FlxSprite;
+	var launcherAccent2:FlxSprite;
+	var launcherGlow:FlxSprite;
 	var launcherLabel:FlxText;
 	var launcherSubLabel:FlxText;
+	var launcherDot:FlxSprite;
+	var launcherArrow:FlxText;
+
 	var upButton:FlxSprite;
 	var downButton:FlxSprite;
+	var upGlow:FlxSprite;
+	var downGlow:FlxSprite;
 	var closeButton:FlxSprite;
+	var closeGlow:FlxSprite;
 	var animationButton:FlxSprite;
+	var animationGlow:FlxSprite;
 	var animationLabel:FlxText;
+	var animationStatusDot:FlxSprite;
+
+	var upIndicator:FlxSprite;
+	var downIndicator:FlxSprite;
+	var animationIndicator:FlxSprite;
+
 	public var animationsEnabled:Bool = true;
 	public var panelOpen:Bool = false;
 
@@ -34,17 +50,23 @@ class MidSliceSettings extends Module {
 		super.onUpdate(event);
 
 		if (Std.isOfType(FlxG.state, MainMenuState)) {
-			if (menuUi == null) createMenuPanel();
+			if (menuUi == null) {
+				createMenuPanel();
+			}
+
 			updateMenuPanel();
 		} else if (menuUi != null) {
-			menuState.remove(menuUi, true);
+			if (menuState != null) {
+				menuState.remove(menuUi, true);
+			}
+
 			menuUi.destroy();
+
 			menuUi = null;
+			settingsPanel = null;
 			menuState = null;
-			panelParts = [];
 			panelOpen = false;
 		}
-
 	}
 
 	function isDownscrollSelected():Bool {
@@ -66,102 +88,504 @@ class MidSliceSettings extends Module {
 
 	function createMenuPanel():Void {
 		menuState = FlxG.state;
+
 		menuUi = new FlxSpriteGroup();
+		menuUi.scrollFactor.set(0, 0);
 
-		var panelWidth = 310;
-		var panelHeight = 300;
-		var panelX = (FlxG.width - panelWidth) / 2;
-		var panelY = (FlxG.height - panelHeight) / 2;
+		settingsPanel = new FlxSpriteGroup();
+		settingsPanel.scrollFactor.set(0, 0);
+		menuUi.add(settingsPanel);
 
-		addPanelPart(new FlxSprite(panelX + 8, panelY + 8).makeGraphic(panelWidth, panelHeight, 0xFF11101A));
-		addPanelPart(new FlxSprite(panelX, panelY).makeGraphic(panelWidth, panelHeight, 0xFF211A2A));
-		addPanelPart(new FlxSprite(panelX, panelY).makeGraphic(155, 6, 0xFFFF405D));
-		addPanelPart(new FlxSprite(panelX + 155, panelY).makeGraphic(155, 6, 0xFF398CFF));
-		addPanelText(panelX + 20, panelY + 20, 250, "MİDSLICE", 27, 0xFFFFFFFF);
-		addPanelText(panelX + 21, panelY + 53, 250, "KONTROL ALANI  /  0.8.6", 12, 0xFFFF91A2);
-		addPanelPart(new FlxSprite(panelX + 20, panelY + 80).makeGraphic(270, 2, 0xFF514052));
-		addPanelText(panelX + 20, panelY + 96, 250, "AKIŞ ÇİZGİSİ HİZASI", 12, 0xFFBDB8C2);
+		var pw = 560;
+		var ph = 560;
+		var px = (FlxG.width - pw) / 2;
+		var py = (FlxG.height - ph) / 2;
 
-		addPanelPart(new FlxSprite(panelX + 14, panelY + 120).makeGraphic(130, 58, 0xFF100E19));
-		addPanelPart(new FlxSprite(panelX + 156, panelY + 120).makeGraphic(140, 58, 0xFF100E19));
-		upButton = new FlxSprite(panelX + 18, panelY + 124).makeGraphic(122, 50, 0xFFE84151);
-		downButton = new FlxSprite(panelX + 160, panelY + 124).makeGraphic(132, 50, 0xFF173D73);
-		addPanelPart(upButton);
-		addPanelPart(downButton);
-		addPanelText(panelX + 18, panelY + 139, 122, "YUKARI", 16, 0xFFFFFFFF);
-		addPanelText(panelX + 160, panelY + 139, 132, "AŞAĞI", 16, 0xFFFFFFFF);
+		// ══════════════════════════════════
+		// ── BACKDROP DIMMER ──
+		// ══════════════════════════════════
+		var dimmer = new FlxSprite()
+			.makeGraphic(FlxG.width, FlxG.height, 0xFF03020A);
+		dimmer.alpha = 0.75;
+		addPanelPart(dimmer);
 
-		addPanelText(panelX + 20, panelY + 194, 250, "ÖZEL VURUŞ EFEKTLERİ", 12, 0xFFBDB8C2);
-		animationButton = new FlxSprite(panelX + 18, panelY + 216).makeGraphic(274, 46, 0xFFE84151);
-		addPanelPart(animationButton);
-		animationLabel = new FlxText(panelX + 18, panelY + 229, 274, "", 16);
-		animationLabel.setFormat("Press Start 2P", 16, 0xFFFFFFFF, null, null, 0x00000000, false);
-		animationLabel.alignment = "center";
-		addPanelPart(animationLabel);
-		addPanelText(panelX + 20, panelY + 270, 260, "SOL/SAĞ: HİZA     A: FX", 10, 0xFFBDB8C2);
+		// ══════════════════════════════════
+		// ── OUTER GLOW LAYERS ──
+		// ══════════════════════════════════
+		addPanelPart(new FlxSprite(px - 6, py - 6)
+			.makeGraphic(pw + 12, ph + 12, 0xFF1A1030));
+		addPanelPart(new FlxSprite(px - 3, py - 3)
+			.makeGraphic(pw + 6, ph + 6, 0xFF3D2E66));
 
-		closeButton = new FlxSprite(panelX + 276, panelY + 15).makeGraphic(22, 22, 0xFF701B2A);
+		addPanelPart(new FlxSprite(px + 14, py + 14)
+			.makeGraphic(pw, ph, 0xFF02010A));
+
+		addPanelPart(new FlxSprite(px, py)
+			.makeGraphic(pw, ph, 0xFF100D1A));
+
+		var innerTone = new FlxSprite(px + 1, py + 1)
+			.makeGraphic(pw - 2, 150, 0xFF160F24);
+		innerTone.alpha = 0.6;
+		addPanelPart(innerTone);
+
+		// ══════════════════════════════════
+		// ── DOUBLE INNER BORDER ──
+		// ══════════════════════════════════
+		addPanelPart(new FlxSprite(px + 3, py + 3)
+			.makeGraphic(pw - 6, 1, 0xFF2A2244));
+		addPanelPart(new FlxSprite(px + 3, py + ph - 4)
+			.makeGraphic(pw - 6, 1, 0xFF2A2244));
+		addPanelPart(new FlxSprite(px + 3, py + 3)
+			.makeGraphic(1, ph - 6, 0xFF2A2244));
+		addPanelPart(new FlxSprite(px + pw - 4, py + 3)
+			.makeGraphic(1, ph - 6, 0xFF2A2244));
+
+		addPanelPart(new FlxSprite(px + 8, py + 8)
+			.makeGraphic(pw - 16, 1, 0xFF1A1428));
+		addPanelPart(new FlxSprite(px + 8, py + ph - 9)
+			.makeGraphic(pw - 16, 1, 0xFF1A1428));
+		addPanelPart(new FlxSprite(px + 8, py + 8)
+			.makeGraphic(1, ph - 16, 0xFF1A1428));
+		addPanelPart(new FlxSprite(px + pw - 9, py + 8)
+			.makeGraphic(1, ph - 16, 0xFF1A1428));
+
+		// ══════════════════════════════════
+		// ── CORNER BRACKETS ──
+		// ══════════════════════════════════
+		addPanelPart(new FlxSprite(px, py).makeGraphic(42, 5, 0xFFFF405D));
+		addPanelPart(new FlxSprite(px, py).makeGraphic(5, 42, 0xFFFF405D));
+		addPanelPart(new FlxSprite(px, py + 42).makeGraphic(12, 2, 0xFFFF8198));
+		addPanelPart(new FlxSprite(px + 42, py).makeGraphic(12, 2, 0xFFFF8198));
+
+		addPanelPart(new FlxSprite(px + pw - 42, py).makeGraphic(42, 5, 0xFF398CFF));
+		addPanelPart(new FlxSprite(px + pw - 5, py).makeGraphic(5, 42, 0xFF398CFF));
+		addPanelPart(new FlxSprite(px + pw - 12, py + 42).makeGraphic(12, 2, 0xFF9BCBFF));
+		addPanelPart(new FlxSprite(px + pw - 54, py).makeGraphic(12, 2, 0xFF9BCBFF));
+
+		addPanelPart(new FlxSprite(px, py + ph - 5).makeGraphic(42, 5, 0xFF398CFF));
+		addPanelPart(new FlxSprite(px, py + ph - 42).makeGraphic(5, 42, 0xFF398CFF));
+		addPanelPart(new FlxSprite(px, py + ph - 44).makeGraphic(12, 2, 0xFF9BCBFF));
+		addPanelPart(new FlxSprite(px + 42, py + ph - 2).makeGraphic(12, 2, 0xFF9BCBFF));
+
+		addPanelPart(new FlxSprite(px + pw - 42, py + ph - 5).makeGraphic(42, 5, 0xFFFF405D));
+		addPanelPart(new FlxSprite(px + pw - 5, py + ph - 42).makeGraphic(5, 42, 0xFFFF405D));
+		addPanelPart(new FlxSprite(px + pw - 12, py + ph - 44).makeGraphic(12, 2, 0xFFFF8198));
+		addPanelPart(new FlxSprite(px + pw - 54, py + ph - 2).makeGraphic(12, 2, 0xFFFF8198));
+
+		// ══════════════════════════════════
+		// ── TOP COLOR BAND ──
+		// ══════════════════════════════════
+		var mid = Std.int(pw / 2);
+		addPanelPart(new FlxSprite(px + 5, py + 5)
+			.makeGraphic(mid - 5, 7, 0xFFFF405D));
+		addPanelPart(new FlxSprite(px + mid, py + 5)
+			.makeGraphic(mid - 5, 7, 0xFF398CFF));
+		addPanelPart(new FlxSprite(px + 5, py + 5)
+			.makeGraphic(mid - 5, 1, 0xFFFFB0C0));
+		addPanelPart(new FlxSprite(px + mid, py + 5)
+			.makeGraphic(mid - 5, 1, 0xFFB0D4FF));
+		addPanelPart(new FlxSprite(px + 5, py + 12)
+			.makeGraphic(pw - 10, 3, 0xFF18102A));
+		addPanelPart(new FlxSprite(px + mid - 2, py + 5).makeGraphic(4, 11, 0xFF18102A));
+
+		// ══════════════════════════════════
+		// ── TITLE AREA ──
+		// ══════════════════════════════════
+		addPanelPart(new FlxSprite(px + 34, py + 32).makeGraphic(12, 12, 0xFFFF405D));
+		addPanelPart(new FlxSprite(px + 36, py + 34).makeGraphic(8, 8, 0xFFFF8198));
+		addPanelPart(new FlxSprite(px + 38, py + 36).makeGraphic(4, 4, 0xFF100D1A));
+
+		addPanelText(px + 60, py + 24, 440,
+			"MIDSLICE", 28, 0xFFFFFFFF);
+
+		addPanelText(px + 60, py + 60, 440,
+			"SETTINGS HUB // 0.8.6", 12, 0xFFFF8198);
+
+		addPanelPart(new FlxSprite(px + 60, py + 86).makeGraphic(5, 5, 0xFFFF405D));
+		addPanelPart(new FlxSprite(px + 72, py + 86).makeGraphic(5, 5, 0xFF398CFF));
+		addPanelPart(new FlxSprite(px + 84, py + 86).makeGraphic(5, 5, 0xFF5A4E70));
+		addPanelPart(new FlxSprite(px + 96, py + 86).makeGraphic(5, 5, 0xFF2A2244));
+		addPanelPart(new FlxSprite(px + 110, py + 88).makeGraphic(pw - 240, 2, 0xFF2A2244));
+		addPanelPart(new FlxSprite(px + 110, py + 91).makeGraphic(pw - 240, 1, 0xFF0A0812));
+
+		// ══════════════════════════════════
+		// ── CLOSE BUTTON ──
+		// ══════════════════════════════════
+		closeGlow = new FlxSprite(px + pw - 68, py + 32)
+			.makeGraphic(44, 44, 0xFF3A1020);
+		addPanelPart(closeGlow);
+
+		closeButton = new FlxSprite(px + pw - 64, py + 36)
+			.makeGraphic(36, 36, 0xFF2A1828);
 		addPanelPart(closeButton);
-		addPanelText(panelX + 276, panelY + 16, 22, "X", 13, 0xFFFFFFFF);
 
-		var launcherWidth = 270;
-		var launcherHeight = 66;
-		var launcherX = FlxG.width - launcherWidth - 38;
-		var launcherY = (FlxG.height - launcherHeight) / 2;
+		addPanelPart(new FlxSprite(px + pw - 64, py + 36)
+			.makeGraphic(36, 2, 0xFFFF405D));
 
-		launcherShadow = new FlxSprite(launcherX + 7, launcherY + 7)
-			.makeGraphic(launcherWidth, launcherHeight, 0xB0000000);
+		addPanelText(px + pw - 64, py + 44, 36,
+			"X", 16, 0xFFFF8198);
+
+		// ══════════════════════════════════
+		// ── SECTION 01: SCROLL DIRECTION ──
+		// ══════════════════════════════════
+		var sec1Y = py + 116;
+
+		addPanelPart(new FlxSprite(px + 34, sec1Y)
+			.makeGraphic(38, 38, 0xFFFF405D));
+		addPanelPart(new FlxSprite(px + 36, sec1Y + 2)
+			.makeGraphic(34, 34, 0xFF100D1A));
+		addPanelText(px + 34, sec1Y + 9, 38,
+			"01", 12, 0xFFFF8198);
+
+		addPanelText(px + 82, sec1Y + 2, 400,
+			"SCROLL DIRECTION", 14, 0xFFFFFFFF);
+		addPanelText(px + 82, sec1Y + 22, 400,
+			"Choose how notes travel", 9, 0xFFBEB6CB);
+
+		var btnY = sec1Y + 46;
+		var btnW = Std.int((pw - 90) / 2);
+
+		upGlow = new FlxSprite(px + 32, btnY - 2)
+			.makeGraphic(btnW + 4, 100, 0xFFFF405D);
+		addPanelPart(upGlow);
+
+		addPanelPart(new FlxSprite(px + 34, btnY)
+			.makeGraphic(btnW, 96, 0xFF0A0612));
+
+		upButton = new FlxSprite(px + 36, btnY + 2)
+			.makeGraphic(btnW - 4, 92, 0xFF3A1828);
+		addPanelPart(upButton);
+
+		upIndicator = new FlxSprite(px + 36, btnY + 2)
+			.makeGraphic(btnW - 4, 4, 0xFFFF405D);
+		addPanelPart(upIndicator);
+
+		addPanelPart(new FlxSprite(px + 36, btnY + 90)
+			.makeGraphic(btnW - 4, 2, 0xFF1A0A14));
+
+		addPanelText(px + 36, btnY + 24, btnW - 4,
+			"UPSCROLL", 14, 0xFFFFFFFF);
+		addPanelText(px + 36, btnY + 48, btnW - 4,
+			"CLASSIC", 9, 0xFFFF8198);
+
+		addPanelPart(new FlxSprite(px + 36 + Std.int(btnW / 2) - 10, btnY + 70)
+			.makeGraphic(4, 10, 0xFFFF8198));
+		addPanelPart(new FlxSprite(px + 36 + Std.int(btnW / 2) - 2, btnY + 70)
+			.makeGraphic(4, 10, 0xFFFF8198));
+		addPanelPart(new FlxSprite(px + 36 + Std.int(btnW / 2) + 6, btnY + 70)
+			.makeGraphic(4, 10, 0xFFFF8198));
+
+		var col2X = px + 46 + btnW;
+
+		downGlow = new FlxSprite(col2X - 2, btnY - 2)
+			.makeGraphic(btnW + 4, 100, 0xFF398CFF);
+		addPanelPart(downGlow);
+
+		addPanelPart(new FlxSprite(col2X, btnY)
+			.makeGraphic(btnW, 96, 0xFF060810));
+
+		downButton = new FlxSprite(col2X + 2, btnY + 2)
+			.makeGraphic(btnW - 4, 92, 0xFF14223A);
+		addPanelPart(downButton);
+
+		downIndicator = new FlxSprite(col2X + 2, btnY + 2)
+			.makeGraphic(btnW - 4, 4, 0xFF398CFF);
+		addPanelPart(downIndicator);
+
+		addPanelPart(new FlxSprite(col2X + 2, btnY + 90)
+			.makeGraphic(btnW - 4, 2, 0xFF0A1424));
+
+		addPanelText(col2X + 2, btnY + 24, btnW - 4,
+			"DOWNSCROLL", 14, 0xFFFFFFFF);
+		addPanelText(col2X + 2, btnY + 48, btnW - 4,
+			"MODERN", 9, 0xFF9BCBFF);
+
+		addPanelPart(new FlxSprite(col2X + 2 + Std.int(btnW / 2) - 10, btnY + 70)
+			.makeGraphic(4, 10, 0xFF9BCBFF));
+		addPanelPart(new FlxSprite(col2X + 2 + Std.int(btnW / 2) - 2, btnY + 70)
+			.makeGraphic(4, 10, 0xFF9BCBFF));
+		addPanelPart(new FlxSprite(col2X + 2 + Std.int(btnW / 2) + 6, btnY + 70)
+			.makeGraphic(4, 10, 0xFF9BCBFF));
+
+		// ══════════════════════════════════
+		// ── SECTION DIVIDER ──
+		// ══════════════════════════════════
+		var divY = py + 286;
+		addPanelPart(new FlxSprite(px + 34, divY).makeGraphic(pw - 68, 1, 0xFF2A2244));
+		addPanelPart(new FlxSprite(px + 34, divY + 2).makeGraphic(pw - 68, 1, 0xFF0A0812));
+		addPanelPart(new FlxSprite(px + Std.int(pw / 2) - 6, divY - 4).makeGraphic(12, 10, 0xFF100D1A));
+		addPanelPart(new FlxSprite(px + Std.int(pw / 2) - 4, divY - 3).makeGraphic(8, 8, 0xFF398CFF));
+		addPanelPart(new FlxSprite(px + Std.int(pw / 2) - 2, divY - 1).makeGraphic(4, 4, 0xFF100D1A));
+
+		// ══════════════════════════════════
+		// ── SECTION 02: HIT EFFECTS ──
+		// ══════════════════════════════════
+		var sec2Y = py + 304;
+
+		addPanelPart(new FlxSprite(px + 34, sec2Y)
+			.makeGraphic(38, 38, 0xFF398CFF));
+		addPanelPart(new FlxSprite(px + 36, sec2Y + 2)
+			.makeGraphic(34, 34, 0xFF100D1A));
+		addPanelText(px + 34, sec2Y + 9, 38,
+			"02", 12, 0xFF9BCBFF);
+
+		addPanelText(px + 82, sec2Y + 2, 400,
+			"HIT EFFECTS", 14, 0xFFFFFFFF);
+		addPanelText(px + 82, sec2Y + 22, 400,
+			"Toggle animation flair", 9, 0xFFBEB6CB);
+
+		var animY = sec2Y + 48;
+
+		animationGlow = new FlxSprite(px + 32, animY - 2)
+			.makeGraphic(pw - 64, 84, 0xFFFF405D);
+		addPanelPart(animationGlow);
+
+		addPanelPart(new FlxSprite(px + 34, animY)
+			.makeGraphic(pw - 68, 80, 0xFF0A0612));
+
+		animationButton = new FlxSprite(px + 36, animY + 2)
+			.makeGraphic(pw - 72, 76, 0xFF28182A);
+		addPanelPart(animationButton);
+
+		animationIndicator = new FlxSprite(px + 36, animY + 2)
+			.makeGraphic(6, 76, 0xFFFF405D);
+		addPanelPart(animationIndicator);
+
+		animationStatusDot = new FlxSprite(px + pw - 72, animY + 30)
+			.makeGraphic(16, 16, 0xFFFF405D);
+		addPanelPart(animationStatusDot);
+		addPanelPart(new FlxSprite(px + pw - 68, animY + 34)
+			.makeGraphic(8, 8, 0xFF28182A));
+
+		animationLabel = new FlxText(
+			px + 56, animY + 20, pw - 140, "", 14
+		);
+		animationLabel.setFormat(Paths.font("vcr.ttf"), 14, 0xFFFFFFFF);
+		addPanelPart(animationLabel);
+
+		addPanelText(px + 56, animY + 44, pw - 140,
+			"Click to toggle", 9, 0xFFBEB6CB);
+
+		// ══════════════════════════════════
+		// ── BOTTOM COMMAND BAR ──
+		// ══════════════════════════════════
+		var barY = py + ph - 64;
+
+		addPanelPart(new FlxSprite(px + 34, barY + 2)
+			.makeGraphic(pw - 68, 44, 0xFF04020A));
+		addPanelPart(new FlxSprite(px + 34, barY)
+			.makeGraphic(pw - 68, 44, 0xFF0D0A16));
+		addPanelPart(new FlxSprite(px + 34, barY)
+			.makeGraphic(pw - 68, 1, 0xFF2A2244));
+
+		var halfBar = Std.int((pw - 68) / 2);
+		addPanelPart(new FlxSprite(px + 34, barY + 42)
+			.makeGraphic(halfBar, 2, 0xFFFF405D));
+		addPanelPart(new FlxSprite(px + 34 + halfBar, barY + 42)
+			.makeGraphic(halfBar, 2, 0xFF398CFF));
+
+		addPanelPart(new FlxSprite(px + 48, barY + 8)
+			.makeGraphic(32, 28, 0xFFFF405D));
+		addPanelPart(new FlxSprite(px + 50, barY + 10)
+			.makeGraphic(28, 24, 0xFF1A1028));
+		addPanelText(px + 48, barY + 14, 32,
+			"M", 11, 0xFFFFFFFF);
+
+		addPanelText(px + 88, barY + 16, 150,
+			"MENU", 10, 0xFFBEB6CB);
+
+		addPanelPart(new FlxSprite(px + Std.int(pw / 2) + 10, barY + 8)
+			.makeGraphic(32, 28, 0xFF398CFF));
+		addPanelPart(new FlxSprite(px + Std.int(pw / 2) + 12, barY + 10)
+			.makeGraphic(28, 24, 0xFF0F1420));
+		addPanelText(px + Std.int(pw / 2) + 10, barY + 14, 32,
+			"A", 11, 0xFFFFFFFF);
+
+		addPanelText(px + Std.int(pw / 2) + 50, barY + 16, 150,
+			"ANIMATION", 10, 0xFFBEB6CB);
+
+		// ══════════════════════════════════════════════════════════
+		// ── LAUNCHER CARD ──
+		// ══════════════════════════════════════════════════════════
+		var lw = 380;
+		var lh = 120;
+		var lx = FlxG.width - lw - 36;
+		var ly = (FlxG.height - lh) / 2;
+
+		launcherGlow = new FlxSprite(lx - 6, ly - 6)
+			.makeGraphic(lw + 12, lh + 12, 0xFF1A1030);
+		launcherGlow.scrollFactor.set(0, 0);
+		menuUi.add(launcherGlow);
+
+		var launcherGlow2 = new FlxSprite(lx - 3, ly - 3)
+			.makeGraphic(lw + 6, lh + 6, 0xFF3D2E66);
+		launcherGlow2.scrollFactor.set(0, 0);
+		menuUi.add(launcherGlow2);
+
+		launcherShadow = new FlxSprite(lx + 10, ly + 10)
+			.makeGraphic(lw, lh, 0xFF02010A);
 		launcherShadow.scrollFactor.set(0, 0);
 		menuUi.add(launcherShadow);
 
-		launcherButton = new FlxSprite(launcherX, launcherY)
-			.makeGraphic(launcherWidth, launcherHeight, 0xFF211A2A);
+		launcherButton = new FlxSprite(lx, ly)
+			.makeGraphic(lw, lh, 0xFF100D1A);
 		launcherButton.scrollFactor.set(0, 0);
 		menuUi.add(launcherButton);
 
-		launcherAccent = new FlxSprite(launcherX, launcherY)
-			.makeGraphic(6, launcherHeight, 0xFFFF405D);
+		var launcherTone = new FlxSprite(lx + 1, ly + 1)
+			.makeGraphic(lw - 2, 60, 0xFF160F24);
+		launcherTone.alpha = 0.6;
+		launcherTone.scrollFactor.set(0, 0);
+		menuUi.add(launcherTone);
+
+		var launcherBorder = new FlxSprite(lx + 3, ly + 3)
+			.makeGraphic(lw - 6, 1, 0xFF2A2244);
+		launcherBorder.scrollFactor.set(0, 0);
+		menuUi.add(launcherBorder);
+
+		var launcherBorderB = new FlxSprite(lx + 3, ly + lh - 4)
+			.makeGraphic(lw - 6, 1, 0xFF2A2244);
+		launcherBorderB.scrollFactor.set(0, 0);
+		menuUi.add(launcherBorderB);
+
+		var cTL = new FlxSprite(lx, ly).makeGraphic(28, 4, 0xFFFF405D);
+		cTL.scrollFactor.set(0, 0); menuUi.add(cTL);
+		var cTLv = new FlxSprite(lx, ly).makeGraphic(4, 28, 0xFFFF405D);
+		cTLv.scrollFactor.set(0, 0); menuUi.add(cTLv);
+
+		var cTR = new FlxSprite(lx + lw - 28, ly).makeGraphic(28, 4, 0xFF398CFF);
+		cTR.scrollFactor.set(0, 0); menuUi.add(cTR);
+		var cTRv = new FlxSprite(lx + lw - 4, ly).makeGraphic(4, 28, 0xFF398CFF);
+		cTRv.scrollFactor.set(0, 0); menuUi.add(cTRv);
+
+		var cBL = new FlxSprite(lx, ly + lh - 4).makeGraphic(28, 4, 0xFF398CFF);
+		cBL.scrollFactor.set(0, 0); menuUi.add(cBL);
+		var cBLv = new FlxSprite(lx, ly + lh - 28).makeGraphic(4, 28, 0xFF398CFF);
+		cBLv.scrollFactor.set(0, 0); menuUi.add(cBLv);
+
+		var cBR = new FlxSprite(lx + lw - 28, ly + lh - 4).makeGraphic(28, 4, 0xFFFF405D);
+		cBR.scrollFactor.set(0, 0); menuUi.add(cBR);
+		var cBRv = new FlxSprite(lx + lw - 4, ly + lh - 28).makeGraphic(4, 28, 0xFFFF405D);
+		cBRv.scrollFactor.set(0, 0); menuUi.add(cBRv);
+
+		launcherAccent = new FlxSprite(lx, ly)
+			.makeGraphic(8, lh, 0xFFFF405D);
 		launcherAccent.scrollFactor.set(0, 0);
 		menuUi.add(launcherAccent);
 
-		launcherLabel = new FlxText(launcherX + 20, launcherY + 13, launcherWidth - 30, "MİDSLICE AYARLARI M TUŞU AÇ", 13);
-		launcherLabel.setFormat("Press Start 2P", 13, 0xFFFFFFFF, null, null, 0x00000000, false);
+		launcherAccent2 = new FlxSprite(lx + 8, ly)
+			.makeGraphic(2, lh, 0xFFFF8198);
+		launcherAccent2.scrollFactor.set(0, 0);
+		menuUi.add(launcherAccent2);
+
+		launcherDot = new FlxSprite(lx + lw - 36, ly + 24)
+			.makeGraphic(14, 14, 0xFFFF405D);
+		launcherDot.scrollFactor.set(0, 0);
+		menuUi.add(launcherDot);
+
+		var launcherDotInner = new FlxSprite(lx + lw - 32, ly + 28)
+			.makeGraphic(6, 6, 0xFFFF8198);
+		launcherDotInner.scrollFactor.set(0, 0);
+		menuUi.add(launcherDotInner);
+
+		launcherLabel = new FlxText(
+			lx + 26, ly + 26,
+			lw - 70, "MIDSLICE", 18
+		);
+		launcherLabel.setFormat(Paths.font("vcr.ttf"), 18, 0xFFFFFFFF);
 		launcherLabel.scrollFactor.set(0, 0);
 		menuUi.add(launcherLabel);
 
-		launcherSubLabel = new FlxText(launcherX + 20, launcherY + 40, launcherWidth - 30, "KAYDIRMA  /  ANİMASYON", 8);
-		launcherSubLabel.setFormat("Press Start 2P", 8, 0xFFFF91A2, null, null, 0x00000000, false);
+		launcherSubLabel = new FlxText(
+			lx + 26, ly + 54,
+			lw - 70, "SETTINGS HUB", 10
+		);
+		launcherSubLabel.setFormat(Paths.font("vcr.ttf"), 10, 0xFFFF8198);
 		launcherSubLabel.scrollFactor.set(0, 0);
 		menuUi.add(launcherSubLabel);
 
+		launcherArrow = new FlxText(
+			lx + lw - 40, ly + lh - 36,
+			28, ">", 14
+		);
+		launcherArrow.setFormat(Paths.font("vcr.ttf"), 14, 0xFF398CFF);
+		launcherArrow.scrollFactor.set(0, 0);
+		menuUi.add(launcherArrow);
+
+		var ld1 = new FlxSprite(lx + 26, ly + 88).makeGraphic(5, 5, 0xFFFF405D);
+		ld1.scrollFactor.set(0, 0); menuUi.add(ld1);
+		var ld2 = new FlxSprite(lx + 38, ly + 88).makeGraphic(5, 5, 0xFF398CFF);
+		ld2.scrollFactor.set(0, 0); menuUi.add(ld2);
+		var ld3 = new FlxSprite(lx + 50, ly + 88).makeGraphic(5, 5, 0xFF5A4E70);
+		ld3.scrollFactor.set(0, 0); menuUi.add(ld3);
+
+		var launcherHalf = Std.int(lw / 2);
+		var lab = new FlxSprite(lx, ly + lh - 3)
+			.makeGraphic(launcherHalf, 3, 0xFFFF405D);
+		lab.scrollFactor.set(0, 0);
+		menuUi.add(lab);
+
+		var lab2 = new FlxSprite(lx + launcherHalf, ly + lh - 3)
+			.makeGraphic(lw - launcherHalf, 3, 0xFF398CFF);
+		lab2.scrollFactor.set(0, 0);
+		menuUi.add(lab2);
+
 		menuState.add(menuUi);
+
 		refreshPanelVisibility();
 	}
 
 	function addPanelPart(sprite:FlxSprite):Void {
-		panelParts.push(sprite);
-		menuUi.add(sprite);
+		settingsPanel.add(sprite);
 	}
 
-	function addPanelText(x:Float, y:Float, width:Float, text:String, size:Int, color:Int):Void {
+	function addPanelText(
+		x:Float,
+		y:Float,
+		width:Float,
+		text:String,
+		size:Int,
+		color:Int
+	):Void {
 		var label = new FlxText(x, y, width, text, size);
-		label.setFormat("Press Start 2P", size, color, null, null, 0x00000000, false);
-		addPanelPart(label);
+		label.setFormat(Paths.font("vcr.ttf"), size, color);
+		settingsPanel.add(label);
 	}
 
 	function updateMenuPanel():Void {
 		var hoveringLauncher = mouseOver(launcherButton);
-		launcherButton.color = hoveringLauncher ? 0xFF30263D : 0xFF211A2A;
-		launcherAccent.color = hoveringLauncher ? 0xFF398CFF : 0xFFFF405D;
-		launcherSubLabel.color = hoveringLauncher ? 0xFF9BCBFF : 0xFFFF91A2;
+
+		launcherButton.color = hoveringLauncher
+			? 0xFF1E1830
+			: 0xFF100D1A;
+
+		launcherAccent.color = hoveringLauncher
+			? 0xFF398CFF
+			: 0xFFFF405D;
+
+		launcherAccent2.color = hoveringLauncher
+			? 0xFF9BCBFF
+			: 0xFFFF8198;
+
+		launcherSubLabel.color = hoveringLauncher
+			? 0xFF9BCBFF
+			: 0xFFFF8198;
+
+		launcherDot.color = hoveringLauncher
+			? 0xFF398CFF
+			: 0xFFFF405D;
+
+		launcherArrow.color = hoveringLauncher
+			? 0xFFFF405D
+			: 0xFF398CFF;
 
 		if (FlxG.mouse.justPressed) {
 			if (hoveringLauncher) {
 				togglePanel();
 			} else if (panelOpen && mouseOver(upButton)) {
-				Preferences.downscroll = false;
+				setDownscroll(false);
 			} else if (panelOpen && mouseOver(downButton)) {
-				Preferences.downscroll = true;
+				setDownscroll(true);
 			} else if (panelOpen && mouseOver(animationButton)) {
 				toggleAnimations();
 			} else if (panelOpen && mouseOver(closeButton)) {
@@ -170,13 +594,53 @@ class MidSliceSettings extends Module {
 			}
 		}
 
-		upButton.color = isDownscrollSelected() ? 0xFF701B2A : 0xFFE84151;
-		downButton.color = isDownscrollSelected() ? 0xFF347FE5 : 0xFF173D73;
-		animationButton.color = animationsEnabled ? 0xFFE84151 : 0xFF701B2A;
-		animationLabel.text = animationsEnabled ? "ANİMASYON: AÇIK" : "ANİMASYON: KAPALI";
+		var downscroll = isDownscrollSelected();
+
+		upButton.color = downscroll
+			? 0xFF1A1420
+			: 0xFF4A1E30;
+		upGlow.color = downscroll
+			? 0xFF2A1A28
+			: 0xFFFF405D;
+		upIndicator.visible = !downscroll;
+
+		downButton.color = downscroll
+			? 0xFF1E3A6A
+			: 0xFF141828;
+		downGlow.color = downscroll
+			? 0xFF398CFF
+			: 0xFF1A2238;
+		downIndicator.visible = downscroll;
+
+		animationButton.color = animationsEnabled
+			? 0xFF32182A
+			: 0xFF181622;
+		animationGlow.color = animationsEnabled
+			? 0xFFFF405D
+			: 0xFF2A2238;
+		animationIndicator.color = animationsEnabled
+			? 0xFFFF405D
+			: 0xFF4A4460;
+		animationStatusDot.color = animationsEnabled
+			? 0xFFFF405D
+			: 0xFF4A4460;
+
+		animationLabel.text = animationsEnabled
+			? "HIT ANIMATION: ON"
+			: "HIT ANIMATION: OFF";
+
+		if (panelOpen && mouseOver(closeButton)) {
+			closeButton.color = 0xFF4A1830;
+			closeGlow.color = 0xFF5A2038;
+		} else {
+			closeButton.color = 0xFF2A1828;
+			closeGlow.color = 0xFF3A1020;
+		}
 	}
 
 	function mouseOver(sprite:FlxSprite):Bool {
+		if (sprite == null) return false;
+
 		return FlxG.mouse.x >= sprite.x
 			&& FlxG.mouse.x <= sprite.x + sprite.width
 			&& FlxG.mouse.y >= sprite.y
@@ -184,8 +648,8 @@ class MidSliceSettings extends Module {
 	}
 
 	function refreshPanelVisibility():Void {
-		for (part in panelParts) {
-			part.visible = panelOpen;
+		if (settingsPanel != null) {
+			settingsPanel.visible = panelOpen;
 		}
 	}
 }

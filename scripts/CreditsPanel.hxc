@@ -3,6 +3,7 @@ import flixel.FlxState;
 import flixel.FlxSprite;
 import flixel.group.FlxSpriteGroup;
 import flixel.text.FlxText;
+import funkin.Paths;
 import funkin.modding.module.Module;
 import funkin.modding.events.ScriptEvent.UpdateScriptEvent;
 import funkin.ui.mainmenu.MainMenuState;
@@ -25,7 +26,10 @@ class CreditsPanel extends Module {
 		}
 
 		if (FlxG.keys.justPressed.C) {
-			if (overlay == null) createPanel();
+			if (overlay == null) {
+				createPanel();
+			}
+
 			panelOpen = !panelOpen;
 			overlay.visible = panelOpen;
 		}
@@ -38,34 +42,277 @@ class CreditsPanel extends Module {
 
 	function createPanel():Void {
 		ownerState = FlxG.state;
+
 		overlay = new FlxSpriteGroup();
 		overlay.scrollFactor.set(0, 0);
 
-		var panelX = (FlxG.width - 560) / 2;
-		var panelY = (FlxG.height - 390) / 2;
+		var w = 820;
+		var h = 620;
+		var x = (FlxG.width - w) / 2;
+		var y = (FlxG.height - h) / 2;
 
-		var dimmer = new FlxSprite().makeGraphic(FlxG.width, FlxG.height, 0xFF080811);
-		dimmer.alpha = 0.78;
+		// ══════════════════════════════════
+		// ── BACKGROUND DIMMER ──
+		// ══════════════════════════════════
+		var dimmer = new FlxSprite()
+			.makeGraphic(FlxG.width, FlxG.height, 0xFF03020A);
+		dimmer.alpha = 0.9;
 		addPart(dimmer);
-		addPart(new FlxSprite(panelX + 9, panelY + 10).makeGraphic(560, 390, 0xFF090912));
-		addPart(new FlxSprite(panelX, panelY).makeGraphic(560, 390, 0xFF201827));
-		addPart(new FlxSprite(panelX, panelY).makeGraphic(280, 7, 0xFFFF405D));
-		addPart(new FlxSprite(panelX + 280, panelY).makeGraphic(280, 7, 0xFF398CFF));
 
-		addText(panelX + 34, panelY + 30, 490, "YAPIMCILAR", 38, 0xFFFFFFFF);
-		addText(panelX + 36, panelY + 80, 488, "ORTA NOTALAR FNF V-SLİCE 0.8.6 İÇİN", 14, 0xFFFF91A2);
-		addPart(new FlxSprite(panelX + 36, panelY + 116).makeGraphic(488, 2, 0xFF514052));
+		var topVig = new FlxSprite(0, 0)
+			.makeGraphic(FlxG.width, 80, 0xFF000000);
+		topVig.alpha = 0.5;
+		addPart(topVig);
 
-		addText(panelX + 38, panelY + 145, 170, "MOD TASARIMI", 12, 0xFFBDB8C2);
-		addText(panelX + 230, panelY + 137, 292, "ALI BERK", 24, 0xFFFFFFFF);
-		addText(panelX + 38, panelY + 199, 170, "PROJE", 12, 0xFFBDB8C2);
-		addText(panelX + 230, panelY + 191, 292, "MiDSLiCE", 24, 0xFFFF526D);
-		addText(panelX + 38, panelY + 253, 170, "OYUN SÜRÜMÜ", 12, 0xFFBDB8C2);
-		addText(panelX + 230, panelY + 245, 292, "FNF V-SLİCE 0.8.6", 20, 0xFF65A8FF);
+		var botVig = new FlxSprite(0, FlxG.height - 80)
+			.makeGraphic(FlxG.width, 80, 0xFF000000);
+		botVig.alpha = 0.5;
+		addPart(botVig);
 
-		addPart(new FlxSprite(panelX + 36, panelY + 296).makeGraphic(488, 2, 0xFF514052));
-		addText(panelX + 36, panelY + 315, 488, "Bağımsız hayran yapımı modifikasyon / Resmi değil", 13, 0xFFBDB8C2);
-		addText(panelX + 36, panelY + 356, 488, "C TUŞU YADA ESC TUŞU İLE KAPAT", 12, 0xFFFFFFFF);
+		// ══════════════════════════════════
+		// ── OUTER GLOW LAYERS ──
+		// ══════════════════════════════════
+		addPart(new FlxSprite(x - 8, y - 8)
+			.makeGraphic(w + 16, h + 16, 0xFF1A1030));
+		addPart(new FlxSprite(x - 5, y - 5)
+			.makeGraphic(w + 10, h + 10, 0xFF2A1F48));
+		addPart(new FlxSprite(x - 2, y - 2)
+			.makeGraphic(w + 4, h + 4, 0xFF3D2E66));
+
+		addPart(new FlxSprite(x + 18, y + 18)
+			.makeGraphic(w, h, 0xFF02010A));
+
+		addPart(new FlxSprite(x, y)
+			.makeGraphic(w, h, 0xFF100D1A));
+
+		var innerTone = new FlxSprite(x + 1, y + 1)
+			.makeGraphic(w - 2, 200, 0xFF160F24);
+		innerTone.alpha = 0.6;
+		addPart(innerTone);
+
+		// ══════════════════════════════════
+		// ── INNER BORDERS (double line) ──
+		// ══════════════════════════════════
+		addPart(new FlxSprite(x + 3, y + 3)
+			.makeGraphic(w - 6, 1, 0xFF2A2244));
+		addPart(new FlxSprite(x + 3, y + h - 4)
+			.makeGraphic(w - 6, 1, 0xFF2A2244));
+		addPart(new FlxSprite(x + 3, y + 3)
+			.makeGraphic(1, h - 6, 0xFF2A2244));
+		addPart(new FlxSprite(x + w - 4, y + 3)
+			.makeGraphic(1, h - 6, 0xFF2A2244));
+
+		addPart(new FlxSprite(x + 8, y + 8)
+			.makeGraphic(w - 16, 1, 0xFF1A1428));
+		addPart(new FlxSprite(x + 8, y + h - 9)
+			.makeGraphic(w - 16, 1, 0xFF1A1428));
+		addPart(new FlxSprite(x + 8, y + 8)
+			.makeGraphic(1, h - 16, 0xFF1A1428));
+		addPart(new FlxSprite(x + w - 9, y + 8)
+			.makeGraphic(1, h - 16, 0xFF1A1428));
+
+		// ══════════════════════════════════
+		// ── CORNER BRACKETS ──
+		// ══════════════════════════════════
+		addPart(new FlxSprite(x, y).makeGraphic(48, 5, 0xFFFF405D));
+		addPart(new FlxSprite(x, y).makeGraphic(5, 48, 0xFFFF405D));
+		addPart(new FlxSprite(x, y + 48).makeGraphic(14, 2, 0xFFFF8198));
+		addPart(new FlxSprite(x + 48, y).makeGraphic(14, 2, 0xFFFF8198));
+		addPart(new FlxSprite(x + w - 48, y).makeGraphic(48, 5, 0xFF398CFF));
+		addPart(new FlxSprite(x + w - 5, y).makeGraphic(5, 48, 0xFF398CFF));
+		addPart(new FlxSprite(x + w - 14, y + 48).makeGraphic(14, 2, 0xFF9BCBFF));
+		addPart(new FlxSprite(x + w - 62, y).makeGraphic(14, 2, 0xFF9BCBFF));
+		addPart(new FlxSprite(x, y + h - 5).makeGraphic(48, 5, 0xFF398CFF));
+		addPart(new FlxSprite(x, y + h - 48).makeGraphic(5, 48, 0xFF398CFF));
+		addPart(new FlxSprite(x, y + h - 50).makeGraphic(14, 2, 0xFF9BCBFF));
+		addPart(new FlxSprite(x + 48, y + h - 2).makeGraphic(14, 2, 0xFF9BCBFF));
+		addPart(new FlxSprite(x + w - 48, y + h - 5).makeGraphic(48, 5, 0xFFFF405D));
+		addPart(new FlxSprite(x + w - 5, y + h - 48).makeGraphic(5, 48, 0xFFFF405D));
+		addPart(new FlxSprite(x + w - 14, y + h - 50).makeGraphic(14, 2, 0xFFFF8198));
+		addPart(new FlxSprite(x + w - 62, y + h - 2).makeGraphic(14, 2, 0xFFFF8198));
+
+		// ══════════════════════════════════
+		// ── TOP COLOR BAND ──
+		// ══════════════════════════════════
+		var mid = Std.int(w / 2);
+		addPart(new FlxSprite(x + 5, y + 5)
+			.makeGraphic(mid - 5, 7, 0xFFFF405D));
+		addPart(new FlxSprite(x + mid, y + 5)
+			.makeGraphic(mid - 5, 7, 0xFF398CFF));
+		addPart(new FlxSprite(x + 5, y + 5)
+			.makeGraphic(mid - 5, 1, 0xFFFFB0C0));
+		addPart(new FlxSprite(x + mid, y + 5)
+			.makeGraphic(mid - 5, 1, 0xFFB0D4FF));
+		addPart(new FlxSprite(x + 5, y + 12)
+			.makeGraphic(w - 10, 3, 0xFF18102A));
+		addPart(new FlxSprite(x + mid - 2, y + 5).makeGraphic(4, 11, 0xFF18102A));
+
+		// ══════════════════════════════════
+		// ── HEADER AREA ──
+		// ══════════════════════════════════
+		addPart(new FlxSprite(x + 42, y + 36).makeGraphic(14, 14, 0xFFFF405D));
+		addPart(new FlxSprite(x + 45, y + 39).makeGraphic(8, 8, 0xFFFF8198));
+		addPart(new FlxSprite(x + 47, y + 41).makeGraphic(4, 4, 0xFF100D1A));
+
+		addText(x + 72, y + 28, 700,
+			"PROJECT CREDITS", 28, 0xFFFFFFFF);
+
+		addText(x + 72, y + 66, 650,
+			"MIDSLICE // V-SLICE 0.8.6", 14, 0xFFFF8198);
+
+		addPart(new FlxSprite(x + 72, y + 96).makeGraphic(6, 6, 0xFFFF405D));
+		addPart(new FlxSprite(x + 86, y + 96).makeGraphic(6, 6, 0xFF398CFF));
+		addPart(new FlxSprite(x + 100, y + 96).makeGraphic(6, 6, 0xFF5A4E70));
+		addPart(new FlxSprite(x + 114, y + 96).makeGraphic(6, 6, 0xFF2A2244));
+		addPart(new FlxSprite(x + 130, y + 98).makeGraphic(w - 210, 2, 0xFF2A2244));
+		addPart(new FlxSprite(x + 130, y + 101).makeGraphic(w - 210, 1, 0xFF0A0812));
+
+		// ══════════════════════════════════
+		// ── DEVELOPER CARD ──
+		// ══════════════════════════════════
+		var cardY = y + 128;
+		var cardH = 140;
+
+		addPart(new FlxSprite(x + 42, cardY + 4)
+			.makeGraphic(w - 84, cardH, 0xFF04020A));
+		addPart(new FlxSprite(x + 40, cardY - 2)
+			.makeGraphic(w - 80, cardH + 4, 0xFF2A2244));
+		addPart(new FlxSprite(x + 42, cardY)
+			.makeGraphic(w - 84, cardH, 0xFF1A1028));
+		addPart(new FlxSprite(x + 42, cardY)
+			.makeGraphic(w - 84, 2, 0xFF3D2E66));
+		var cardTone = new FlxSprite(x + 44, cardY + 2)
+			.makeGraphic(w - 88, 40, 0xFF221A38);
+		cardTone.alpha = 0.7;
+		addPart(cardTone);
+
+		addPart(new FlxSprite(x + 42, cardY)
+			.makeGraphic(8, cardH, 0xFFFF405D));
+		addPart(new FlxSprite(x + 50, cardY)
+			.makeGraphic(2, cardH, 0xFFFF8198));
+
+		addPart(new FlxSprite(x + 76, cardY + 22).makeGraphic(16, 16, 0xFFFF405D));
+		addPart(new FlxSprite(x + 79, cardY + 25).makeGraphic(10, 10, 0xFF1A1028));
+		addPart(new FlxSprite(x + 82, cardY + 28).makeGraphic(4, 4, 0xFFFF405D));
+
+		addText(x + 104, cardY + 24, 600,
+			"MOD DESIGN & DEVELOPMENT", 12, 0xFFBEB6CB);
+
+		addText(x + 76, cardY + 52, 620,
+			"BF_ALIBERK_BF & PRISMCREW", 34, 0xFFFFFFFF);
+
+		addPart(new FlxSprite(x + 76, cardY + 100).makeGraphic(160, 4, 0xFFFF405D));
+		addPart(new FlxSprite(x + 76, cardY + 104).makeGraphic(160, 2, 0xFFFF8198));
+		addPart(new FlxSprite(x + 240, cardY + 100).makeGraphic(60, 4, 0xFF398CFF));
+		addPart(new FlxSprite(x + 240, cardY + 104).makeGraphic(60, 2, 0xFF9BCBFF));
+		addPart(new FlxSprite(x + 304, cardY + 100).makeGraphic(24, 4, 0xFF5A4E70));
+
+		addPart(new FlxSprite(x + w - 150, cardY + 22)
+			.makeGraphic(90, 28, 0xFF2A1A3A));
+		addPart(new FlxSprite(x + w - 150, cardY + 22)
+			.makeGraphic(90, 2, 0xFFFF405D));
+		addPart(new FlxSprite(x + w - 144, cardY + 32).makeGraphic(6, 6, 0xFFFF405D));
+		addText(x + w - 132, cardY + 30, 80,
+			"ACTIVE", 10, 0xFFFF8198);
+
+		// ══════════════════════════════════
+		// ── INFO GRID ──
+		// ══════════════════════════════════
+		var gridY = y + 300;
+		var colW = Std.int((w - 100) / 2);
+
+		addPart(new FlxSprite(x + 42, gridY)
+			.makeGraphic(colW, 110, 0xFF140F20));
+		addPart(new FlxSprite(x + 42, gridY)
+			.makeGraphic(colW, 2, 0xFFFF405D));
+		addPart(new FlxSprite(x + 42, gridY + 108)
+			.makeGraphic(colW, 2, 0xFF2A2244));
+		addPart(new FlxSprite(x + 54, gridY + 16)
+			.makeGraphic(30, 30, 0xFFFF405D));
+		addPart(new FlxSprite(x + 56, gridY + 18)
+			.makeGraphic(26, 26, 0xFF1A1028));
+		addText(x + 54, gridY + 22, 30,
+			"01", 11, 0xFFFF8198);
+
+		addText(x + 96, gridY + 22, colW - 60,
+			"PROJECT", 11, 0xFFBEB6CB);
+		addText(x + 54, gridY + 52, colW - 20,
+			"MidSlice", 24, 0xFFFF526D);
+
+		var col2X = x + 58 + colW;
+		addPart(new FlxSprite(col2X, gridY)
+			.makeGraphic(colW, 110, 0xFF0F1420));
+		addPart(new FlxSprite(col2X, gridY)
+			.makeGraphic(colW, 2, 0xFF398CFF));
+		addPart(new FlxSprite(col2X, gridY + 108)
+			.makeGraphic(colW, 2, 0xFF2A2244));
+		addPart(new FlxSprite(col2X + 12, gridY + 16)
+			.makeGraphic(30, 30, 0xFF398CFF));
+		addPart(new FlxSprite(col2X + 14, gridY + 18)
+			.makeGraphic(26, 26, 0xFF0F1420));
+		addText(col2X + 12, gridY + 22, 30,
+			"02", 11, 0xFF9BCBFF);
+
+		addText(col2X + 54, gridY + 22, colW - 60,
+			"TARGET VERSION", 11, 0xFFBEB6CB);
+		addText(col2X + 12, gridY + 52, colW - 20,
+			"V-SLICE 0.8.6", 20, 0xFF65A8FF);
+
+		// ══════════════════════════════════
+		// ── SEPARATOR ──
+		// ══════════════════════════════════
+		var sepY = y + 440;
+		addPart(new FlxSprite(x + 42, sepY).makeGraphic(w - 84, 1, 0xFF2A2244));
+		addPart(new FlxSprite(x + 42, sepY + 2).makeGraphic(w - 84, 1, 0xFF0A0812));
+		addPart(new FlxSprite(x + Std.int(w / 2) - 6, sepY - 4).makeGraphic(12, 10, 0xFF100D1A));
+		addPart(new FlxSprite(x + Std.int(w / 2) - 4, sepY - 3).makeGraphic(8, 8, 0xFFFF405D));
+		addPart(new FlxSprite(x + Std.int(w / 2) - 2, sepY - 1).makeGraphic(4, 4, 0xFF100D1A));
+
+		// ══════════════════════════════════
+		// ── DESCRIPTION ──
+		// ══════════════════════════════════
+		var descY = y + 466;
+		addPart(new FlxSprite(x + 42, descY).makeGraphic(36, 4, 0xFFFF405D));
+		addPart(new FlxSprite(x + 82, descY).makeGraphic(20, 4, 0xFF398CFF));
+		addPart(new FlxSprite(x + 106, descY).makeGraphic(10, 4, 0xFF5A4E70));
+
+		addText(x + 42, descY + 16, w - 84,
+			"INDEPENDENT FAN-MADE MOD", 14, 0xFFFFFFFF);
+		addText(x + 42, descY + 42, w - 84,
+			"Not affiliated with the official developers.", 11, 0xFFBEB6CB);
+
+		// ══════════════════════════════════
+		// ── BOTTOM COMMAND BAR ──
+		// ══════════════════════════════════
+		var barY = y + h - 68;
+		addPart(new FlxSprite(x + 42, barY + 2)
+			.makeGraphic(w - 84, 46, 0xFF04020A));
+		addPart(new FlxSprite(x + 42, barY)
+			.makeGraphic(w - 84, 46, 0xFF0D0A16));
+		addPart(new FlxSprite(x + 42, barY)
+			.makeGraphic(w - 84, 1, 0xFF2A2244));
+		var halfBar = Std.int((w - 84) / 2);
+		addPart(new FlxSprite(x + 42, barY + 44)
+			.makeGraphic(halfBar, 2, 0xFFFF405D));
+		addPart(new FlxSprite(x + 42 + halfBar, barY + 44)
+			.makeGraphic(halfBar, 2, 0xFF398CFF));
+
+		addPart(new FlxSprite(x + 60, barY + 10)
+			.makeGraphic(32, 26, 0xFFFF405D));
+		addPart(new FlxSprite(x + 62, barY + 12)
+			.makeGraphic(28, 22, 0xFF1A1028));
+		addText(x + 60, barY + 15, 32,
+			"C", 11, 0xFFFFFFFF);
+
+		addPart(new FlxSprite(x + 100, barY + 10)
+			.makeGraphic(50, 26, 0xFF398CFF));
+		addPart(new FlxSprite(x + 102, barY + 12)
+			.makeGraphic(46, 22, 0xFF0F1420));
+		addText(x + 100, barY + 15, 50,
+			"ESC", 11, 0xFFFFFFFF);
+
+		addText(x + 160, barY + 16, w - 180,
+			"CLOSE CREDITS", 11, 0xFFBEB6CB);
 
 		ownerState.add(overlay);
 		overlay.visible = false;
@@ -75,16 +322,28 @@ class CreditsPanel extends Module {
 		overlay.add(sprite);
 	}
 
-	function addText(x:Float, y:Float, width:Float, text:String, size:Int, color:Int):Void {
+	function addText(
+		x:Float,
+		y:Float,
+		width:Float,
+		text:String,
+		size:Int,
+		color:Int
+	):Void {
 		var label = new FlxText(x, y, width, text, size);
-		label.setFormat("Press Start 2P", size, color, null, null, 0x00000000, false);
+		label.setFormat(Paths.font("vcr.ttf"), size, color);
 		overlay.add(label);
 	}
 
 	function removePanel():Void {
 		if (overlay == null) return;
-		ownerState.remove(overlay, true);
+
+		if (ownerState != null) {
+			ownerState.remove(overlay, true);
+		}
+
 		overlay.destroy();
+
 		overlay = null;
 		ownerState = null;
 		panelOpen = false;
