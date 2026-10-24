@@ -1,86 +1,43 @@
-# MidSlice Güvenlik Politikası
+# Prism Crew Studio — Security Policy
 
-## Güvenlik Hakkında
+**Version:** 1.0  
+**Effective Date:** October 24, 2026  
+**Copyright:** © 2026 Prism Crew Studio. All rights reserved.
 
-MidSlice, **Friday Night Funkin' V-Slice 0.8.6** için geliştirilmiş bağımsız bir modifikasyondur.
+### 1. Our Objective
 
-Güvenlik açıklarını ciddiye alıyoruz. MidSlice veya resmi dağıtım paketleriyle ilgili gerçek bir güvenlik açığı tespit ettiyseniz, bunu sorumlu bir şekilde bildirmeniz beklenmektedir.
+At Prism Crew Studio, we prioritize the security of our projects, source code, and users. This policy outlines how security vulnerabilities discovered in our projects should be reported and addressed.
 
-## Güvenlik Açığı Bildirimi
+### 2. Supported Versions
 
-Bir güvenlik açığı keşfettiyseniz, açığı kamuya açık şekilde paylaşmadan önce proje geliştiricileriyle iletişime geçin.
+Security updates are provided for project versions that we actively maintain and explicitly support. The support status for each project is specified within its respective repository.
 
-Güvenlik açığını bildirirken mümkün olduğunca aşağıdaki bilgileri sağlayın:
+### 3. Reporting Vulnerabilities
 
-- Açığın kısa ve net açıklaması
-- Etkilenen MidSlice sürümü
-- Sorunun nasıl ortaya çıktığı
-- Açığı yeniden oluşturmak için gereken adımlar
-- Varsa hata kayıtları veya ilgili teknik bilgiler
-- Açığın olası etkisi
+If you discover a security vulnerability, please:
 
-Eksik veya belirsiz bildirimler incelenmeyebilir.
+- Report it privately to Prism Crew Studio before disclosing it publicly.
+- Identify the affected project and version.
+- Describe the impact of the vulnerability and, if possible, provide steps to reproduce it.
+- Do not include passwords, access keys, or other personal/sensitive information in your report.
 
-## Kamuya Açık Açık Paylaşımı
+For reporting, please use the *Private vulnerability reporting* feature found under the **Security** tab of the relevant GitHub repository. If this feature is unavailable, please use the private communication channel specified by the repository maintainer.
 
-Bir güvenlik açığını, geliştiricilere makul bir süre tanımadan kamuya açık şekilde yayımlamak **sorumlu güvenlik bildirimi olarak kabul edilmez**.
+### 4. Responsible Disclosure
 
-Henüz düzeltilmemiş güvenlik açıklarının ayrıntılı istismar yöntemlerini, çalıştırılabilir kodlarını veya kullanıcıları doğrudan etkileyebilecek teknik bilgilerini kamuya açık alanlarda paylaşmayın.
+We request that you allow a reasonable amount of time for us to investigate, verify, and remediate any reported vulnerabilities. Vulnerabilities should not be disclosed publicly without prior coordination with Prism Crew Studio.
 
-Güvenlik açığı giderildikten veya geliştiriciler tarafından gerekli önlemler alındıktan sonra uygun bir açıklama yapılabilir.
+We do not guarantee that every report will be accepted, resolved within a specific timeframe, or eligible for a reward.
 
-## Kötüye Kullanım
+### 5. Scope and Limitations
 
-Aşağıdaki davranışlar güvenlik bildirimi kapsamında değerlendirilmez:
+Security research must be conducted only on systems for which you have authorization and in compliance with all applicable laws. Do not access user data, disrupt services, or put others' systems at risk by testing for vulnerabilities.
 
-- Bilerek zarar verme girişimleri
-- Kullanıcı verilerini izinsiz elde etme
-- Hesaplara veya sistemlere izinsiz erişim
-- Kötü amaçlı yazılım dağıtımı
-- MidSlice kullanıcılarını hedef alan saldırılar
-- Proje altyapısını kasıtlı olarak kullanılmaz hâle getirme
-- Güvenlik açığını kullanarak başkalarına zarar verme
+### 6. Communication
 
-Bir güvenlik açığını keşfetmiş olmanız, bu açığı kötüye kullanmanız için izin verildiği anlamına gelmez.
-
-## Üçüncü Taraf İçerikler
-
-MidSlice, **Friday Night Funkin' V-Slice** ve diğer üçüncü taraf yazılımlarla birlikte kullanılabilir.
-
-Üçüncü taraf yazılımlardaki güvenlik açıkları doğrudan MidSlice'ın güvenlik açığı olarak değerlendirilmez.
-
-Ancak bir üçüncü taraf güvenlik açığının MidSlice'ı doğrudan etkilediğini düşünüyorsanız bunu yine de bildirebilirsiniz.
-
-## Desteklenen Sürümler
-
-Güvenlik düzeltmeleri öncelikle aktif olarak geliştirilen MidSlice sürümlerine uygulanır.
-
-Eski, değiştirilmiş veya resmi olmayan sürümlerde oluşan sorunların düzeltilmesi garanti edilmez.
-
-## Güvenlik Bildirimlerinin İşlenmesi
-
-Her güvenlik bildirimi incelenir. Ancak bildirimin alınması, açığın kesin olarak kabul edildiği veya düzeltileceği anlamına gelmez.
-
-Geliştiriciler:
-
-- Açığın gerçek olup olmadığını doğrulayabilir.
-- Etkisini değerlendirebilir.
-- Gerekli düzeltmeleri hazırlayabilir.
-- Açığın kapsamını değiştirebilir.
-- Bildirimi reddedebilir.
-
-Bir bildirimin reddedilmesi durumunda, bildirimi yapan kişinin MidSlice üzerinde herhangi bir işlem yapma hakkı olduğu anlamına gelmez.
-
-## Yasal Uyarı
-
-MidSlice'ın güvenlik açıklarını araştırırken yürürlükteki yasalara ve üçüncü taraf sistemlerin kullanım koşullarına uyulmalıdır.
-
-İzinsiz erişim, veri hırsızlığı, sabotaj veya başka kişilere ya da sistemlere zarar verme amacıyla yapılan işlemler **güvenlik araştırması olarak kabul edilmez**.
-
-MidSlice projesi, kötüye kullanım amacıyla yapılan faaliyetleri desteklemez.
+For security-related notifications, use the security contact method specified in the GitHub repository for the relevant project. Do not assume or guess a contact address that has not been explicitly provided.
 
 ---
 
-**MidSlice Security Policy**
-
-**Güvenlik açığını bulduysan bildir. Kötüye kullanıyorsan dur.**
+**Prism Crew Studio**  
+*Beyond the Spectrum*
