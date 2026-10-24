@@ -1,65 +1,56 @@
-# MidSlice Lisansı
+# Prism Crew Studio License (PCSL) v1.0
 
-Telif Hakkı (c) 2026 MidSlice Katkıcıları
+Copyright (c) 2026 Prism Crew Studio. All rights reserved.
 
-## 1. MidSlice Nedir?
+## 1. Ownership
 
-**MidSlice**, **Friday Night Funkin' V-Slice 0.8.6** için geliştirilmiş bağımsız bir modifikasyondur.
+All source code, software, libraries, tools, assets, designs, documentation, and other materials distributed under this license are the intellectual property of Prism Crew Studio or their respective credited owners, unless explicitly stated otherwise.
 
-MidSlice'ın temel amacı, Friday Night Funkin' içerisindeki notaların ekranın orta bölümünde konumlandırılmasını sağlayarak farklı bir oynanış deneyimi sunmaktır.
+## 2. Permission
 
-MidSlice, **The Funkin' Crew, Inc.** tarafından geliştirilmemiştir, onaylanmamıştır ve resmi bir Friday Night Funkin' ürünü değildir.
+Permission is granted to view and study the source code for educational, research, and personal learning purposes.
 
-## 2. Lisans
+Such permission does not grant the right to redistribute, republish, sell, sublicense, or commercially exploit the licensed materials.
 
-MidSlice için özel olarak oluşturulan özgün kodlar, betikler, yapılandırmalar ve diğer özgün içerikler **MIT Lisansı** kapsamında kullanılabilir.
+## 3. Restrictions
 
-Bu yazılımı kullanabilir, inceleyebilir, değiştirebilir ve dağıtabilirsiniz.
+Without prior written permission from Prism Crew Studio, you may not:
 
-Ancak aşağıdaki şartlara uymak zorundasınız:
+- Copy, redistribute, or republish the licensed materials or substantial portions thereof.
+- Sell, sublicense, or commercially exploit the licensed materials.
+- Publish modified or derivative versions of the licensed materials.
+- Claim authorship or ownership of the original work.
+- Remove copyright notices, license notices, or author credits.
+- Use the licensed materials in another project in a way that violates this license.
 
-1. MidSlice'a ait telif hakkı bildirimlerini ve bu lisans metnini korumalısınız.
+## 4. Attribution
 
-2. MidSlice kodunun değiştirilmiş bir sürümünü dağıtıyorsanız, yaptığınız değişiklikleri açıkça belirtmelisiniz.
+Any use expressly authorized by Prism Crew Studio must retain all applicable copyright notices, author credits, and attribution requirements.
 
-3. MidSlice'ın tamamını veya önemli bir bölümünü kendi çalışmanızmış gibi sunamazsınız.
+Attribution alone does not constitute permission to use, modify, or redistribute the licensed materials.
 
-4. MidSlice'ın resmi geliştiricisi, sahibi veya temsilcisi olduğunuzu iddia edemezsiniz.
+## 5. Third-Party Materials
 
-5. MidSlice ile bağlantılı olmayan kişi, ekip veya kuruluşların resmi desteğini veya onayını varmış gibi gösteremezsiniz.
+Third-party libraries, assets, and components remain subject to their own respective licenses. This license does not override or replace those licenses.
 
-6. MidSlice içerisindeki üçüncü taraf içerikleri bu lisans kapsamında değildir ve kendi lisanslarına tabidir.
+## 6. No Warranty
 
-## 3. Friday Night Funkin' Hakları
+The licensed materials are provided "AS IS", without warranties of any kind, express or implied, to the maximum extent permitted by applicable law.
 
-**Friday Night Funkin'**, karakterleri, müzikleri, sesleri, görselleri, logoları ve diğer özgün içerikleri ilgili hak sahiplerinin mülkiyetindedir.
+Prism Crew Studio shall not be liable for claims or damages arising from the use of the licensed materials, to the maximum extent permitted by applicable law.
 
-Bu lisans, hiçbir şekilde bu içerikler üzerinde mülkiyet veya kullanım hakkı devretmez.
+## 7. Termination
 
-MidSlice, **Friday Night Funkin'** veya **The Funkin' Crew, Inc.** adına herhangi bir hak iddia etmez.
+Any rights granted under this license terminate automatically if you materially violate its terms, subject to applicable law.
 
-## 4. Yetkisiz Kullanım
+## 8. Requests for Permission
 
-MidSlice'ın özgün kodunu veya içeriğini kullanarak oluşturulan bir çalışmanın MidSlice'ın resmi sürümü olduğu izlenimi oluşturulamaz.
+For permissions not explicitly granted by this license, contact Prism Crew Studio through its official communication channels.
 
-Ayrıca MidSlice'ın geliştiricilerinin adı, projenin izni olmadan başka bir proje için destek, ortaklık veya resmi bağlantı varmış gibi kullanılamaz.
+## 9. Copyright Notice
 
-## 5. Sorumluluk Reddi
+Unless otherwise specified:
 
-> MIDS­LICE YAZILIMI "OLDUĞU GİBİ" SUNULMAKTADIR.
+Copyright (c) 2026 Prism Crew Studio. All rights reserved.
 
-MidSlice geliştiricileri, yazılımın kullanımından veya kullanım dışı kalmasından kaynaklanan herhangi bir doğrudan ya da dolaylı zarardan sorumlu değildir.
-
-Uyumluluk sorunları, veri kaybı, performans problemleri, oyun hataları veya üçüncü taraf yazılımlarla oluşabilecek sorunların sorumluluğu kullanıcıya aittir.
-
-## 6. Son Hüküm
-
-MidSlice'ı kullanarak bu lisansın şartlarını kabul etmiş olursunuz.
-
-Bu lisansın şartlarını kabul etmiyorsanız MidSlice'ı kullanmamalı, değiştirmemeli veya dağıtmamalısınız.
-
----
-
-**MidSlice**
-
-*Notalarını Ortala. Oynanışı Değiştir.*
+Unauthorized copying, redistribution, or commercial use is prohibited.
